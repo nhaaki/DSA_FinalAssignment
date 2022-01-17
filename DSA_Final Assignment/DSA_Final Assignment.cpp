@@ -1,6 +1,8 @@
 #include <iostream>
+using namespace std;
+
 
 int main()
 {
-    std::cout << "Hello World!\n";
+    cout << "Test first commit by hakimi\n";
 }
