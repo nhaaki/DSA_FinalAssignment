@@ -6,7 +6,7 @@
 
 using namespace std;
 
-int main()
+void stod()
 {   // https://www.cplusplus.com/reference/ctime/tm/ for info about time structure (tm)
     tm result;
     char aString[] = "03/04/2020  06:09:02";
