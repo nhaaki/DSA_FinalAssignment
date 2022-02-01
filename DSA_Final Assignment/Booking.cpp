@@ -1,7 +1,9 @@
 #include <iostream>
 #include "Booking.h"
 
-Booking::Booking() {}
+Booking::Booking() {
+
+}
 
 Booking::Booking(int bID, string bd, string gn, string rn, string rt, string s, string cIn, string cOut, int ng, string sr)
 	: bookingID(bID), bookingDate(bd), guestName(gn), roomNo(rn), roomType(rt), status(s), checkIn(cIn), checkOut(cOut), noOfGuests(ng), specialRequests(sr) {}
@@ -73,7 +75,7 @@ void Booking::setCheckIn(string cIn)
 
 string Booking::getCheckIn()
 {
-	return bookingDate;
+	return checkIn;
 }
 
 void Booking::setCheckOut(string cOut)
@@ -108,5 +110,5 @@ string Booking::getSpecialRequest()
 
 void Booking::displayDetails()
 {
-	cout << "Booking ID: " << getBookingID() << " Booking Date: " << getBookingDate() << " Guest Name: " << getGuestName() << endl;
+	cout << "Booking ID: " << getBookingID() << " Guest Name: " << getGuestName() << " Room No. " << getRoomNo() << " Check In Date: " << getCheckIn() << " Check Out Date: " << getCheckOut() << endl;
 }
