@@ -46,7 +46,18 @@ int charvalue(char c)
 
 
 int Dictionary::hash(KeyType key) {
-	int total = charvalue(key[0]);
+
+	unsigned long hash = 5381;
+	unsigned int size = key.length();
+	unsigned int i = 0;
+
+	for (i = 0;i < size;i++) {
+		hash = ((hash << 5) + hash) + (key[i]); /* hash * 33 + c */
+		hash %= MAX_SIZE;
+	}
+
+
+	/*int total = charvalue(key[0]);
 	for (int i = 1; i < key.length();i++)
 	{
 		if (charvalue(key[i]) == -1)
@@ -55,8 +66,8 @@ int Dictionary::hash(KeyType key) {
 		}
 		total = total * 52 + charvalue(key[i]);
 		total %= MAX_SIZE;
-	}
-	return total;
+	}*/
+	return hash;
 }
 
 // add a new item with the specified key to the Dictionary
@@ -83,6 +94,31 @@ bool Dictionary::add(KeyType newKey, ItemType newItem) {
 		newNode->item = newItem;
 		newNode->next = NULL;
 		temp->next = newNode;
+	}
+	size++;
+	return true;
+
+}
+
+bool Dictionary::addToFront(KeyType newKey, ItemType newItem) {
+	string key = newKey;
+	int index = stoi(key) - 100;
+	if (items[index] == NULL)
+	{
+		items[index] = new Node;
+		items[index]->key = newKey;
+		items[index]->item = newItem;
+		items[index]->next = NULL;
+	}
+	else
+	{
+		//cout << "Collision at " << index << " - " << newKey << " and " << items[index]->key << endl;
+		Node* temp = items[index];
+		Node* newNode = new Node;
+		newNode->key = newKey;
+		newNode->item = newItem;
+		newNode->next = temp;
+		items[index] = newNode;
 	}
 	size++;
 	return true;
@@ -166,6 +202,35 @@ void Dictionary::print() {
 			}
 		}
 	}
+}
+
+void Dictionary::printUserBookings(KeyType key, string name) {
+	
+	int index = stoi(key) - 100;
+
+	if (items[index] == NULL)
+	{
+		cout << "No bookings made!" << endl;
+	}
+	else
+	{
+		//cout << "Collision at " << index << " - " << newKey << " and " << items[index]->key << endl;
+		Node* temp = items[index];
+		while (temp != NULL) {
+			if (temp->item.getGuestName() == name && temp->item.getStatus() == "Booked") {
+				cout << "Booking ID: " << temp->item.getBookingID() << "   Name: " << temp->item.getGuestName()
+					<< "   Check In Date: " << temp->item.getCheckIn() << "   Check In Status: " << temp->item.getStatus() << endl;
+				temp = temp->next;
+			}
+			else if (temp->item.getStatus() != "Booked") {
+				temp = NULL;
+			}
+			else {
+				temp = temp->next;
+			}
+		}
+	}
+
 }
 
 void Dictionary::displayRoomDates(const char* userDate)

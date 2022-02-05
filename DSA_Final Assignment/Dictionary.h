@@ -4,7 +4,7 @@
 #include "Booking.h"
 using namespace std;
 
-const int MAX_SIZE = 21;
+const int MAX_SIZE = 25;
 typedef Booking ItemType;
 typedef string KeyType;
 
@@ -33,6 +33,8 @@ public:
 	// add a new item with the specified key to the Dictionary
 	bool add(KeyType newKey, ItemType newItem);
 
+	bool addToFront(KeyType newKey, ItemType newItem);
+
 	// remove an item with the specified key in the Dictionary
 	void remove(KeyType key);
 
@@ -48,6 +50,8 @@ public:
 	//------------------- Other useful functions -----------------
 	// display the items in the Dictionary
 	void print();
+
+	void printUserBookings(KeyType key, string name);
 
 	void displayRoomDates(const char* d);
 };

@@ -18,6 +18,7 @@ int main()
 	List bookingCheckIn;
 	//List roomList;
 	Dictionary bookingRoom;
+	Dictionary checkinbookings;
 
 	vector<vector<string>> bookingData;
 	vector<string> row;
@@ -45,6 +46,17 @@ int main()
 			bookingData[i][6], bookingData[i][7], stoi(bookingData[i][8]), "");
 		bookingCheckIn.add(b);
 		string roomNo = bookingData[i][3];
+
+		string name = bookingData[i][2].substr(0,5);
+		int hashNum = checkinbookings.hash(name) + 100;
+
+		if (b.getStatus() == "Booked") {
+			checkinbookings.addToFront(to_string(hashNum), b);
+		}
+		else {
+			checkinbookings.add(to_string(hashNum), b);
+		}
+
 		roomNo.erase(std::remove(roomNo.begin(), roomNo.end(), ' '), roomNo.end());
 		if (roomNo.length() != 0)
 		{
@@ -85,7 +97,15 @@ int main()
 
 		if (option == 1)
 		{
-			cout << "Guest Check In" << endl;
+			string name;
+			string temp;
+
+			cin.ignore(numeric_limits<streamsize>::max(), '\n');
+			cout << "Enter your name: ";
+			getline(cin, name);
+			temp = name.substr(0, 5);
+			int hashed = checkinbookings.hash(temp) + 100;
+			checkinbookings.printUserBookings(to_string(hashed), name);
 		}
 		else
 		if (option == 2)	
