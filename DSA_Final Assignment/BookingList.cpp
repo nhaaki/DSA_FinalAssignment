@@ -1,17 +1,17 @@
-#include "List.h"
+#include "BookingList.h"
 #include "Booking.h"
 #include <time.h>
 #include <sstream>
 #include <iostream>
 #include <string>
 
-List::List() { size = 0; }
+BookingList::BookingList() { size = 0; }
 
 // add a new item to the back of the list (append)
 // pre : size < MAX_SIZE
 // post: new item is added to the back of the list
 //       size of list is increased by 1
-void List::add(ItemType newItem)
+void BookingList::add(Booking newItem)
 {
 	Node* newNode = new Node;
 	newNode->item = newItem;
@@ -33,7 +33,7 @@ void List::add(ItemType newItem)
 // post: item is removed the specified position in the list
 //       items after the position are shifted forward by 1 position
 //       size of list is decreased by 1
-void List::remove(int index)
+void BookingList::remove(int index)
 {
 	bool success = (index >= 0) && (index < size);
 	if (success)
@@ -66,7 +66,7 @@ void List::remove(int index)
 // pre : 1 <= index <= size
 // post: none
 // return the item in the specified index of the list
-ItemType List::get(int index)
+Booking BookingList::get(int index)
 {
 	bool success = (index >= 0) && (index < size);
 	if (success)
@@ -91,7 +91,7 @@ ItemType List::get(int index)
 // pre : none
 // post: none
 // return true if the list is empty; otherwise returns false
-bool List::isEmpty()
+bool BookingList::isEmpty()
 {
 	return size == 0;
 }
@@ -100,7 +100,7 @@ bool List::isEmpty()
 // pre : none
 // post: none
 // return the number of items in the list
-int List::getLength()
+int BookingList::getLength()
 {
 	return size;
 }
@@ -124,51 +124,70 @@ int List::getLength()
 		cout << "The list is empty." << endl;
 }*/
 
-void List::getGuestDate(const char* userDate)
+int BookingList::getGuestDate(const char* userDate)
 {
 	if (!isEmpty())
 	{
 		tm result;
 		sscanf_s(userDate, "%2d/%2d/%4d",
 			&result.tm_mday, &result.tm_mon, &result.tm_year);
-		result.tm_hour = 0;
-		result.tm_min = 0;
-		result.tm_sec = 0;
-		result.tm_year -= 1900;
-		result.tm_mon -= 1;
-		time_t inputDate = mktime(&result);
-
-		Node* temp = firstNode;
-		while (temp != NULL)
+		int count = 0;
+		int test = result.tm_year;
+		while (test != 0)
 		{
-			if (temp->item.getStatus() == "Checked Out")
+			test = test / 10;
+			++count;
+		}
+		if (result.tm_mday < 0 || result.tm_mon < 0 || result.tm_year < 0 ||count < 4)
+			return -1;
+		else
+		{
+			result.tm_hour = 0;
+			result.tm_min = 0;
+			result.tm_sec = 0;
+			result.tm_year -= 1900;
+			result.tm_mon -= 1;
+			time_t inputDate = mktime(&result);
+
+			int count1 = 0;
+			Node* temp = firstNode;
+			while (temp != NULL)
 			{
-				string x = temp->item.getCheckIn();
-				const char* array1 = x.c_str();
-				sscanf_s(array1, "%2d/%2d/%4d",
-					&result.tm_mday, &result.tm_mon, &result.tm_year);
-				result.tm_hour = 0;
-				result.tm_min = 0;
-				result.tm_sec = 0;
-				result.tm_year -= 1900;
-				result.tm_mon -= 1;
-				time_t checkInDate = mktime(&result);
+				if (temp->item.getStatus() == "Checked Out")
+				{
+					string x = temp->item.getCheckIn();
+					const char* array1 = x.c_str();
+					sscanf_s(array1, "%2d/%2d/%4d",
+						&result.tm_mday, &result.tm_mon, &result.tm_year);
+					result.tm_hour = 0;
+					result.tm_min = 0;
+					result.tm_sec = 0;
+					result.tm_year -= 1900;
+					result.tm_mon -= 1;
+					time_t checkInDate = mktime(&result);
 
-				x = temp->item.getCheckOut();
-				const char* array2 = x.c_str();
-				sscanf_s(array2, "%2d/%2d/%4d",
-					&result.tm_mday, &result.tm_mon, &result.tm_year);
-				result.tm_hour = 0;
-				result.tm_min = 0;
-				result.tm_sec = 0;
-				result.tm_year -= 1900;
-				result.tm_mon -= 1;
-				time_t checkOutDate = mktime(&result);
+					x = temp->item.getCheckOut();
+					const char* array2 = x.c_str();
+					sscanf_s(array2, "%2d/%2d/%4d",
+						&result.tm_mday, &result.tm_mon, &result.tm_year);
+					result.tm_hour = 0;
+					result.tm_min = 0;
+					result.tm_sec = 0;
+					result.tm_year -= 1900;
+					result.tm_mon -= 1;
+					time_t checkOutDate = mktime(&result);
 
-				if (difftime(inputDate, checkInDate) >= 0 && difftime(checkOutDate, inputDate) >= 0)
-					temp->item.displayDetails();
+					if (difftime(inputDate, checkInDate) >= 0 && difftime(checkOutDate, inputDate) >= 0)
+					{
+						count1++;
+						temp->item.displayDetails();
+					}
+				}
+				temp = temp->next;
 			}
-			temp = temp->next;
+			if (count1 == 0)
+				cout << "No guests on this date" << endl;
+			return 1;
 		}
 	}
 }

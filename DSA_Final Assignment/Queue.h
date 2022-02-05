@@ -5,14 +5,12 @@
 #include "Booking.h"
 using namespace std;
 
-typedef Booking ItemType;
-
 class Queue
 {
 private:
 	struct Node
 	{
-		ItemType item;	// item
+		Booking item;	// item
 		Node* next;	// pointer pointing to next item
 	};
 
@@ -27,16 +25,16 @@ public:
 	~Queue();
 
 	// enqueue (add) item at the back of queue
-	bool enqueue(ItemType item);
+	bool enqueue(Booking item);
 
 	// dequeue (remove) item from front of queue
 	bool dequeue();
 
 	// dequeue (remove) and retrieve item from front of queue
-	bool dequeue(ItemType& item);
+	bool dequeue(Booking& item);
 
 	// retrieve (get) item from front of queue
-	void getFront(ItemType& item);
+	void getFront(Booking& item);
 
 	// check if the queue is empty
 	bool isEmpty();

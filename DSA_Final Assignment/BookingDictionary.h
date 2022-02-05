@@ -5,17 +5,16 @@
 using namespace std;
 
 const int MAX_SIZE = 25;
-typedef Booking ItemType;
 typedef string KeyType;
 
 struct Node
 {
 	KeyType  key;   // search key
-	ItemType item;	// data item
+	Booking item;	// data item
 	Node* next;	// pointer pointing to next item
 };
 
-class Dictionary
+class BookingDictionary
 {
 private:
 	Node* items[MAX_SIZE];
@@ -23,23 +22,18 @@ private:
 
 public:
 	// constructor
-	Dictionary();
+	BookingDictionary();
 
 	// destructor
-	~Dictionary();
-
-	int hash(KeyType key);
+	~BookingDictionary();
 
 	// add a new item with the specified key to the Dictionary
-	bool add(KeyType newKey, ItemType newItem);
+	bool add(KeyType newKey, Booking newItem);
 
-	bool addToFront(KeyType newKey, ItemType newItem);
+	bool addToFront(KeyType newKey, Booking newItem);
 
 	// remove an item with the specified key in the Dictionary
 	void remove(KeyType key);
-
-	// get an item with the specified key in the Dictionary (retrieve)
-	ItemType get(KeyType key);
 
 	// check if the Dictionary is empty
 	bool isEmpty();
@@ -51,7 +45,11 @@ public:
 	// display the items in the Dictionary
 	void print();
 
+	int hash(KeyType key);
+
+	int displayRoomDates(const char* d);
+
 	void printUserBookings(KeyType key, string name);
 
-	void displayRoomDates(const char* d);
+	int getLastDate(int month, int year);
 };
