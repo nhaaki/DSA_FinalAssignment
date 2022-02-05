@@ -142,17 +142,19 @@
     <ClCompile Include="Booking.cpp" />
     <ClCompile Include="DateTimeApp.cpp" />
     <ClCompile Include="DSA_Final Assignment.cpp" />
-    <ClCompile Include="Dictionary.cpp" />
-    <ClCompile Include="List.cpp" />
+    <ClCompile Include="BookingDictionary.cpp" />
+    <ClCompile Include="BookingList.cpp" />
     <ClCompile Include="Queue.cpp" />
     <ClCompile Include="Room.cpp" />
+    <ClCompile Include="RoomList.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Booking.h" />
-    <ClInclude Include="Dictionary.h" />
-    <ClInclude Include="List.h" />
+    <ClInclude Include="BookingDictionary.h" />
+    <ClInclude Include="BookingList.h" />
     <ClInclude Include="Queue.h" />
     <ClInclude Include="Room.h" />
+    <ClInclude Include="RoomList.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

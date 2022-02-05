@@ -8,15 +8,16 @@
 #include "Room.h"
 #include "Queue.h"
 #include "Dictionary.h"
-#include "List.h"
+#include "RoomList.h"
+#include "BookingList.h"
 using namespace std;
 
 int main()
 {
 	void displayMenu();
 	void stod(const char* date);
-	List bookingCheckIn;
-	//List roomList;
+	BookingList bookingCheckIn;
+	RoomList roomList;
 	Dictionary bookingRoom;
 
 	vector<vector<string>> bookingData;
@@ -75,6 +76,7 @@ int main()
 	for (int i = 0;i < roomData.size();i++)
 	{
 		Room r(roomData[i][0], roomData[i][1], stoi(roomData[i][2]));
+		roomList.add(r);
 	}
 
 	int option;
@@ -98,17 +100,21 @@ int main()
 			string date;
 			cout << "Enter a date dd/mm/yyyy: ";
 			cin >> date;
+			cout << "\n";
 			const char* array = date.c_str();
-			bookingCheckIn.getGuestDate(array);
+			if (bookingCheckIn.getGuestDate(array) == -1)
+				cout << "Please enter a valid date in the stated format" << endl;;
 		}
 		else
 		if (option == 4)	
 		{
 			string date;
-			cout << "Enter a date dd/mm/yyyy: ";
+			cout << "Enter month and year mm/yyyy: ";
 			cin >> date;
+			cout << "\n";
 			const char* array = date.c_str();
-			bookingRoom.displayRoomDates(array);
+			if (bookingRoom.displayRoomDates(array) == -1)
+				cout << "Please enter a valid date in the stated format" << endl;;
 		}
 		else
 		if (option == 0)
@@ -136,37 +142,4 @@ void displayMenu()
 	cout << "0 Exit							 \n";
 	cout << "--------------------------------\n";
 	cout << "Enter option : ";
-}
-
-void stod(const char* date)
-{  
-	tm result;
-	sscanf_s(date, "%2d/%2d/%4d" ,
-		&result.tm_mday, &result.tm_mon, &result.tm_year);
-	printf("tm_mday:  %d\n", result.tm_mday);
-	printf("tm_mon:  %d\n", result.tm_mon);
-	printf("tm_year:  %d\n", result.tm_year);
-	result.tm_hour = 0;
-	result.tm_min = 0;
-	result.tm_sec = 0;
-	result.tm_year -= 1900;
-	result.tm_mon -= 1;
-
-
-	tm result1;
-	char aString[] = "03/04/2020";
-	sscanf_s(aString, "%2d/%2d/%4d",
-		&result1.tm_mday, &result1.tm_mon, &result1.tm_year);
-	printf("tm_mday:  %d\n", result1.tm_mday);
-	printf("tm_mon:  %d\n", result1.tm_mon);
-	printf("tm_year:  %d\n", result1.tm_year);
-	result1.tm_hour = 0;
-	result1.tm_min = 0;
-	result1.tm_sec = 0;
-	result1.tm_year -= 1900;
-	result1.tm_mon -= 1;
-
-	time_t timeBig = mktime(&result);
-	time_t timeSmall = mktime(&result1);
-	cout << difftime(timeSmall, timeBig) << endl;
 }

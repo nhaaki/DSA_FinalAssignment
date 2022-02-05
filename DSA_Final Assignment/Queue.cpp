@@ -8,7 +8,7 @@ Queue::~Queue() {
 }
 
 // enqueue (add) item at back of the queue
-bool Queue::enqueue(ItemType item)
+bool Queue::enqueue(Booking item)
 {
 	Node* newNode = new Node;
 	newNode->item = item;
@@ -42,7 +42,7 @@ bool Queue::dequeue() {
 }
 
 // retrieve (get) and dequeue item from front of the queue
-bool Queue::dequeue(ItemType& item) {
+bool Queue::dequeue(Booking& item) {
 	bool success = !isEmpty();
 	if (success) {
 		if (frontNode == backNode) {
@@ -61,7 +61,7 @@ bool Queue::dequeue(ItemType& item) {
 }
 
 // retrieve (get) item from front of queue
-void Queue::getFront(ItemType& item) {
+void Queue::getFront(Booking& item) {
 	if (!isEmpty()) {
 		item = frontNode->item;
 	}

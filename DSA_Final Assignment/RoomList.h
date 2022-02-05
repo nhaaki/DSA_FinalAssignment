@@ -1,16 +1,15 @@
 #include<string>
 #include<iostream>
-#include "Booking.h"
+#include "Room.h"
 using namespace std;
 
-typedef Booking ItemType;
 
-class List
+class RoomList
 {
 private:
 	struct Node
 	{
-		ItemType item;	// data item
+		Room item;	// data item
 		Node* next;	// pointer pointing to next item
 	};
 
@@ -20,20 +19,20 @@ private:
 public:
 
 	// constructor
-	List();
+	RoomList();
 
 	// add a new item to the back of the list (append)
 	// pre : size < MAX_SIZE
 	// post: new item is added to the back of the list
 	//       size of list is increased by 1
-	void add(ItemType newItem);
+	void add(Room newItem);
 
 	// add a new item at a specified position in the list (insert)
 	// pre : 1 <= index <= size+1
 	// post: new item is added to the specified position in the list
 	//       items after the position are shifted back by 1 position
 	//       size of list is increased by 1
-	bool add(int index, ItemType newItem);
+	bool add(int index, Room newItem);
 
 	// remove an item at a specified position in the list
 	// pre : 1 <= index <= size
@@ -46,7 +45,7 @@ public:
 	// pre : 1 <= index <= size
 	// post: none
 	// return the item in the specified index of the list
-	ItemType get(int index);
+	Room get(int index);
 
 	// check if the list is empty
 	// pre : none
@@ -59,14 +58,4 @@ public:
 	// post: none
 	// return the number of items in the list
 	int getLength();
-
-	//------------------- Other useful functions -----------------
-
-	// display the items in the list
-	void print();
-
-	void getGuestDate(const char* inputDate);
-
-	// void replace(int index, ItemType item);
-	// int search(ItemType item);
 };
