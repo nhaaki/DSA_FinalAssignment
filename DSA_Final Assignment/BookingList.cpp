@@ -1,3 +1,8 @@
+// Team member names: Lim Jun Keat (s10205540) & Nur Hakimi B Mohd Yasman (s10206177)
+// Group: 2 
+// Linked list structure used to hold bookings. This class helps to locate when rooms are used, and a merge sort function.
+
+
 #include "BookingList.h"
 #include "Booking.h"
 #include "Room.h"
@@ -126,6 +131,7 @@ int BookingList::getLength()
 		cout << "The list is empty." << endl;
 }*/
 
+// Given a check-in time, check-out time and room type, find a room that has not been checked-in between this period
 string BookingList::findEmptyRoom(const char* ci, const char* co, string rn) {
 
 	string room ="";
@@ -294,6 +300,8 @@ int BookingList::getGuestDate(const char* userDate)
 	}
 }
 
+
+// Given two sorted lists, merge them into one list
 BookingList::Node* BookingList::MergeLists(Node* lst1, Node* lst2) {
 	
 	Node* result = NULL;
@@ -315,6 +323,7 @@ BookingList::Node* BookingList::MergeLists(Node* lst1, Node* lst2) {
 	return result;
 }
 
+// Split a list into two
 void BookingList::splitList(Node* source, Node** front, Node** back) {
 	Node* ptr1;
 	Node* ptr2;
@@ -336,6 +345,7 @@ void BookingList::splitList(Node* source, Node** front, Node** back) {
 	ptr2->next = NULL;
 }
 
+// MergeSort sorting function, used to sort all the bookings in order of BookingID in order to export cleanly
 void BookingList::MergeSort(Node** thead)
 {
 	Node* head = *thead;

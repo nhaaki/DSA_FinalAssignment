@@ -1,3 +1,8 @@
+// Team member names: Lim Jun Keat (s10205540) & Nur Hakimi B Mohd Yasman (s10206177)
+// Group: 2 
+// Object class for Booking
+
+
 #include <iostream>
 #include "Booking.h"
 

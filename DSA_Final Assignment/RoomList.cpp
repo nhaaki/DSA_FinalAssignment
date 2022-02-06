@@ -1,3 +1,7 @@
+// Team member names: Lim Jun Keat (s10205540) & Nur Hakimi B Mohd Yasman (s10206177)
+// Group: 2 
+// A linked list structure for holding rooms. Used to compare rooms in regards to their room type.
+
 #include "RoomList.h"
 #include "Room.h"
 #include <time.h>

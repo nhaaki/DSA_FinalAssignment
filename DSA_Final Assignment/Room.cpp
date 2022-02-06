@@ -1,3 +1,7 @@
+// Team member names: Lim Jun Keat (s10205540) & Nur Hakimi B Mohd Yasman (s10206177)
+// Group: 2 
+// Class object Room to hold the data for rooms.
+
 #include <iostream>
 #include "Room.h"
 

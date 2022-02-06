@@ -1,3 +1,7 @@
+// Team member names: Lim Jun Keat (s10205540) & Nur Hakimi B Mohd Yasman (s10206177)
+// Group: 2 
+// Main application file
+
 #include <iostream>
 #include <fstream>
 #include <string>
@@ -6,13 +10,13 @@
 #include <time.h>
 #include "Booking.h"
 #include "Room.h"
-#include "Queue.h"
 #include "BookingDictionary.h"
 #include "RoomList.h"
 #include "BookingList.h"
 #include <format>
 using namespace std;
 
+// Startup function
 int main()
 {
 	void displayMenu();
@@ -251,6 +255,7 @@ int main()
 
 }
 
+// Print out the menu
 void displayMenu()
 {
 	cout << endl;
@@ -266,6 +271,8 @@ void displayMenu()
 	cout << "Enter option : ";
 }
 
+// Given the booking with modified status, replace the existing booking in the roomlist. 
+// Then, find empty room by iterating through both the booking list and booking dictionary.
 Booking setRoomForBooking(Booking b, RoomList &rl, BookingList bl) {
 	RoomList::Node* start = rl.firstNode->next;
 	RoomList::Node* prev = rl.firstNode;

@@ -1,3 +1,8 @@
+// Team member names: Lim Jun Keat (s10205540) & Nur Hakimi B Mohd Yasman (s10206177)
+// Group: 2 
+// Dictionary, with keys in the form of room number and guest name
+
+
 #include "BookingDictionary.h"
 #include "Booking.h"
 #include "BookingList.h"
@@ -33,6 +38,7 @@ BookingDictionary::~BookingDictionary() {
 	}
 }
 
+// Mainly used for dictionary with guest name as key
 int BookingDictionary::hash(KeyType key) {
 	
 	// DJB Hash Function
@@ -44,18 +50,6 @@ int BookingDictionary::hash(KeyType key) {
 		hash = ((hash << 5) + hash) + (key[i]); /* hash * 33 + c */
 		hash %= MAX_SIZE;
 	}
-
-
-	/*int total = charvalue(key[0]);
-	for (int i = 1; i < key.length();i++)
-	{
-		if (charvalue(key[i]) == -1)
-		{
-			continue;
-		}
-		total = total * 52 + charvalue(key[i]);
-		total %= MAX_SIZE;
-	}*/
 	return hash;
 }
 
@@ -90,7 +84,8 @@ bool BookingDictionary::add(KeyType newKey, Booking newItem) {
 
 }
 
-
+// Mainly used to add/arrange bookings with status "Booked".
+// Arranges these bookings at the front, sorted by earliest check-in date at the front
 bool BookingDictionary::addToFront(KeyType newKey, Booking newItem) {
 	string key = newKey;
 	int index = stoi(key) - 100;
@@ -153,6 +148,7 @@ bool BookingDictionary::addToFront(KeyType newKey, Booking newItem) {
 
 }
 
+// Given a name as key, replace existing booking with modified booking. Works in tandem with setRoomForBooking() in the main application.
 void BookingDictionary::replace(KeyType key, Booking b) {
 	int index = stoi(key) - 100;
 	if (items[index] != NULL) {
@@ -250,6 +246,7 @@ void BookingDictionary::print() {
 	}
 }
 
+// Given the guest name as key, print out all the user bookings on the current day that can be checked in.
 Node* BookingDictionary::printUserBookings(KeyType key, string name, tm* d) {
 
 	int index = stoi(key) - 100;
@@ -320,18 +317,6 @@ Node* BookingDictionary::printUserBookings(KeyType key, string name, tm* d) {
 							currentItem->item.setStatus("Checked In");
 
 							return currentItem;
-
-							//// Assign room
-							//tm checkin;
-							//const char* array1 = currentItem->item.getCheckIn().c_str();
-							//sscanf_s(array1, "%2d/%2d/%4d",
-							//	&checkin.tm_mday, &checkin.tm_mon, &checkin.tm_year);
-
-							//tm checkout;
-							//const char* array2 = currentItem->item.getCheckIn().c_str();
-							//sscanf_s(array2, "%2d/%2d/%4d",
-							//	&checkout.tm_mday, &checkout.tm_mon, &checkout.tm_year);
-
 
 							cout << "\nSuccessfully checked in!\n";
 							break;
@@ -482,6 +467,7 @@ int BookingDictionary::getLastDate(int month, int year)
 	}
 }
 
+// Using a method similar to deconstructing, populate a bookinglist (unarranged) with all the bookings
 void BookingDictionary::returnAllBookings(BookingList &allBookings) {
 
 	for (int i = 0; i < MAX_SIZE; i++) {
