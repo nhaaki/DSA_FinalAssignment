@@ -169,6 +169,8 @@ int main()
 			cout << "\nEnter your name: ";
 			getline(cin, name);
 			temp = name.substr(0, 5);
+			cout << endl << "Choose room type\n";
+			cout << "----------------\n";
 
 			string roomtypes[] = {"Deluxe City View", "Standard City View", "Executive Sea View", "President Suite"};
 			for (int x = 0; x < 4; x++) {
@@ -208,7 +210,7 @@ int main()
 			string newname = newb.getGuestName().substr(0,5);
 			int hashNumnew = checkinbookings.hash(newname) + 100;
 			checkinbookings.addToFront(to_string(hashNumnew), newb);
-			
+			cout << "Booking successfully added!\n\n";
 		}
 		else
 		if (option == 3)	
