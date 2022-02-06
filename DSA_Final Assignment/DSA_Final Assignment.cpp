@@ -153,6 +153,13 @@ int main()
 			if (booking != NULL) {
 				Booking newB = setRoomForBooking(booking->item, roomList, allBookings);
 				if (newB.getBookingID() != NULL) {
+					string roomNo = newB.getRoomNo();
+					roomNo.erase(std::remove(roomNo.begin(), roomNo.end(), ' '), roomNo.end());
+					if (roomNo.length() != 0)
+					{
+						roomNo.erase(0, 4);
+						bookingRoom.add(roomNo, newB);
+					}
 					checkinbookings.replace(to_string(hashed), newB);
 					cout << "Replaced!\n";
 				}
@@ -207,6 +214,14 @@ int main()
 			string datestr(buffer);
 			
 			Booking newb(length+1,datestr, name, "",chosenrt, "Booked", date1, date2, numofguests, req);
+			bookingCheckIn.add(newb);
+			string roomNo = newb.getRoomNo();
+			roomNo.erase(std::remove(roomNo.begin(), roomNo.end(), ' '), roomNo.end());
+			if (roomNo.length() != 0)
+			{
+				roomNo.erase(0, 4);
+				bookingRoom.add(roomNo, newb);
+			}
 			string newname = newb.getGuestName().substr(0,5);
 			int hashNumnew = checkinbookings.hash(newname) + 100;
 			checkinbookings.addToFront(to_string(hashNumnew), newb);

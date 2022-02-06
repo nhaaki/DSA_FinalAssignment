@@ -163,7 +163,7 @@ string BookingList::findEmptyRoom(const char* ci, const char* co, string rn) {
 				continue;
 			}
 			else if (tempNode->item.getRoomNo()==rn){
-
+				
 				tm q;
 				string xx = tempNode->item.getCheckIn();
 				const char* arrayC = xx.c_str();
