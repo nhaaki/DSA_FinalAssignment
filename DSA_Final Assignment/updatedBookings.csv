@@ -98,4 +98,5 @@ Booking ID,Booking Date,Guest Name,Room #,Room Type,Status,Check In,Check Out,Gu
 97,25/03/2021 06:59,Cherry Fowler, ,President Suite,Booked,22/04/2021,25/04/2021,3,
 98,25/03/2021 23:54,Melissa Thompson,Room 103,Executive Sea View,Checked In,31/03/2021,05/04/2021,2,
 99,27/03/2021 20:44,Stuart Johnston, ,Deluxe City View,Booked,02/04/2021,03/04/2021,3,
-100,29/03/2021 23:52,Freddie Payne,Room 120,Executive Sea View,Checked In,12/04/2021,18/04/2021,2,
+100,29/03/2021 23:52,Freddie Payne,Room 103,Executive Sea View,Checked In,12/04/2021,18/04/2021,2,
+101,12/05/3921 00:00,Freddie Payne,,President Suite,Booked,05/03/2021,07/03/2021,4,no

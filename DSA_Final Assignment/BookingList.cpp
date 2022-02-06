@@ -159,7 +159,8 @@ string BookingList::findEmptyRoom(const char* ci, const char* co, string rn) {
 			else if (tempNode->item.getRoomNo()==rn){
 
 				tm q;
-				const char* arrayC = tempNode->item.getCheckIn().c_str();
+				string xx = tempNode->item.getCheckIn();
+				const char* arrayC = xx.c_str();
 				sscanf_s(arrayC, "%2d/%2d/%4d",
 					&q.tm_mday, &q.tm_mon, &q.tm_year);
 				q.tm_hour = 0;
@@ -170,7 +171,8 @@ string BookingList::findEmptyRoom(const char* ci, const char* co, string rn) {
 				time_t cicompare = mktime(&q);
 
 				tm r;
-				const char* arrayD = tempNode->item.getCheckOut().c_str();
+				string yy = tempNode->item.getCheckOut();
+				const char* arrayD = yy.c_str();
 				sscanf_s(arrayD, "%2d/%2d/%4d",
 					&r.tm_mday, &r.tm_mon, &r.tm_year);
 				r.tm_hour = 0;
@@ -180,14 +182,21 @@ string BookingList::findEmptyRoom(const char* ci, const char* co, string rn) {
 				r.tm_mon -= 1;
 				time_t cocompare = mktime(&r);
 
-				if (difftime(cicompare, checkout) < 0 && difftime(checkin, cicompare) > 0) {
+				if (difftime(cicompare, checkin) < 0 && difftime(cocompare, checkout) > 0) {
 					if (room == tempNode->item.getRoomNo()) {
 						room = "";
 					}
 					tempNode = tempNode->next;
 					continue;
 				}
-				else if (difftime(cicompare, checkout) < 0 && difftime(checkin, cicompare) < 0) {
+				else if (difftime(cocompare, checkin) > 0 && difftime(cocompare, checkout) > 0) {
+					if (room == tempNode->item.getRoomNo()) {
+						room = "";
+					}
+					tempNode = tempNode->next;
+					continue;
+				}
+				else if (difftime(cicompare, checkin) > 0 && difftime(cicompare, checkout) < 0) {
 					if (room == tempNode->item.getRoomNo()) {
 						room = "";
 					}
@@ -195,7 +204,9 @@ string BookingList::findEmptyRoom(const char* ci, const char* co, string rn) {
 					continue;
 				}
 				else {
-					room = tempNode->item.getRoomNo();
+					if (room == "") {
+						room = tempNode->item.getRoomNo();
+					}
 					tempNode = tempNode->next;
 					continue;
 				}

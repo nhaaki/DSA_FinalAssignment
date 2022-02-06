@@ -10,6 +10,7 @@
 #include "BookingDictionary.h"
 #include "RoomList.h"
 #include "BookingList.h"
+#include <format>
 using namespace std;
 
 int main()
@@ -157,7 +158,53 @@ int main()
 		else
 		if (option == 2)	
 		{
-			cout << "Add new booking" << endl; 
+			string name;
+			string temp;
+			cin.clear();
+			cin.ignore(numeric_limits<streamsize>::max(), '\n');
+			cout << "\nEnter your name: ";
+			getline(cin, name);
+			temp = name.substr(0, 5);
+
+			string roomtypes[] = {"Deluxe City View", "Standard City View", "Executive Sea View", "President Suite"};
+			for (int x = 0; x < 4; x++) {
+				cout << x+1 << ": " << roomtypes[x] << endl;
+			}
+			int choice;
+			cout << "\nChoose room type: ";
+			cin >> choice;
+			string chosenrt = roomtypes[choice - 1];
+			int numofguests;
+			cout << "\nNumber of guests: ";
+			cin >> numofguests;
+			string date1;
+			cout << "\nEnter check-in dd/mm/yyyy: ";
+			cin >> date1;
+			if (date1.length() < 8) {
+				cout << "Please enter the proper format!\n";
+				continue;
+			}
+			string date2;
+			cout << "\nEnter check-out dd/mm/yyyy: ";
+			cin >> date2;
+			if (date2.length() < 8) {
+				cout << "Please enter the proper format!\n";
+				continue;
+			}
+			cin.clear();
+			cin.ignore(numeric_limits<streamsize>::max(), '\n');
+			string req;
+			cout << "Enter any requests: ";
+			cin >> req;
+			char buffer[40];
+			strftime(buffer, sizeof(buffer), "%d/%m/%Y %H:%M", &currentDate);
+			string datestr(buffer);
+			
+			Booking newb(length+1,datestr, name, "",chosenrt, "Booked", date1, date2, numofguests, req);
+			string newname = newb.getGuestName().substr(0,5);
+			int hashNumnew = checkinbookings.hash(newname) + 100;
+			checkinbookings.addToFront(to_string(hashNumnew), newb);
+			
 		}
 		else
 		if (option == 3)	
@@ -251,11 +298,19 @@ Booking setRoomForBooking(Booking b, RoomList &rl, BookingList bl) {
 	while (iterator != NULL) {
 
 		Room room = iterator->item;
-		const char* arrayA = b.getCheckIn().c_str();
-		const char* arrayB = b.getCheckOut().c_str();
+		string ci = b.getCheckIn();
+		string co = b.getCheckOut();
+		const char* arrayA = ci.c_str();
+		const char* arrayB = co.c_str();
 
 		test = bl.findEmptyRoom(arrayA, arrayB, room.getRoomNo());
-		iterator = iterator->next;
+		if (test != "NIL") {
+			cout << "Room assigned: " << test << endl;
+			break;
+		}
+		else {
+			iterator = iterator->next;
+		}
 	}
 	if (test != "") {
 		b.setRoomNo(test);
