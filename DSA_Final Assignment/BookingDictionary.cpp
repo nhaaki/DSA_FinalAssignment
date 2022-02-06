@@ -1,5 +1,6 @@
 #include "BookingDictionary.h"
 #include "Booking.h"
+#include "BookingList.h"
 #include <iostream>
 #include <string>
 #include <time.h>
@@ -33,7 +34,8 @@ BookingDictionary::~BookingDictionary() {
 }
 
 int BookingDictionary::hash(KeyType key) {
-
+	
+	// DJB Hash Function
 	unsigned long hash = 5381;
 	unsigned int size = key.length();
 	unsigned int i = 0;
@@ -125,7 +127,7 @@ bool BookingDictionary::addToFront(KeyType newKey, Booking newItem) {
 
 			tm checkInDate2;
 			string y = newNode->item.getCheckIn();
-			const char* array2 = x.c_str();
+			const char* array2 = y.c_str();
 			sscanf_s(array2, "%2d/%2d/%4d",
 				&checkInDate2.tm_mday, &checkInDate2.tm_mon, &checkInDate2.tm_year);
 			checkInDate2.tm_hour = 0;
@@ -149,6 +151,41 @@ bool BookingDictionary::addToFront(KeyType newKey, Booking newItem) {
 	size++;
 	return true;
 
+}
+
+void BookingDictionary::replace(KeyType key, Booking b) {
+	int index = stoi(key) - 100;
+	if (items[index] != NULL) {
+		Node* temp = items[index];
+		Node* next = temp->next;
+		while (next != NULL || temp!=NULL) {
+			if (items[index] == temp && temp->item.getBookingID() == b.getBookingID()) {
+				Node* del = items[index];
+				Node* newnode = new Node;
+				newnode->key = key;
+				newnode->item = b;
+				newnode->next = del->next;
+				del->next = NULL;
+				delete del;
+				items[index] = newnode;
+			}
+			else if (next->item.getBookingID() == b.getBookingID()) {
+				Node* del = next;
+				Node* newnode = new Node;
+				newnode->key = key;
+				newnode->item = b;
+				newnode->next = del->next;
+				temp->next = newnode;
+				del->next = NULL;
+				delete del;
+				break;
+			}
+			else {
+				temp = temp->next;
+				next = next->next;
+			}
+		}
+	}
 }
 
 // remove an item with the specified key in the Dictionary
@@ -213,9 +250,11 @@ void BookingDictionary::print() {
 	}
 }
 
-void BookingDictionary::printUserBookings(KeyType key, string name) {
+Node* BookingDictionary::printUserBookings(KeyType key, string name, tm* d) {
 
 	int index = stoi(key) - 100;
+	bool hasBooking = false;
+	time_t currentDate = mktime(d);
 
 	if (items[index] == NULL)
 	{
@@ -226,8 +265,23 @@ void BookingDictionary::printUserBookings(KeyType key, string name) {
 		int counter = 1;
 		//cout << "Collision at " << index << " - " << newKey << " and " << items[index]->key << endl;
 		Node* temp = items[index];
+		cout << endl << "Bookings ready for check-in:\n";
 		while (temp != NULL) {
-			if (temp->item.getGuestName() == name && temp->item.getStatus() == "Booked") {
+			string checkinDate = temp->item.getCheckIn();
+			tm itemdate;
+			const char* array = checkinDate.c_str();
+			sscanf_s(array, "%2d/%2d/%4d",
+				&itemdate.tm_mday, &itemdate.tm_mon, &itemdate.tm_year);
+			itemdate.tm_year -= 1900;
+			itemdate.tm_mon -= 1;
+			itemdate.tm_hour = 0;
+			itemdate.tm_min = 0;
+			itemdate.tm_sec = 0;
+			time_t testing = mktime(&itemdate);
+			double timediff = difftime(currentDate, testing);
+
+			if (temp->item.getGuestName() == name && temp->item.getStatus() == "Booked" && timediff==0.0) {
+				hasBooking = true;
 				cout << counter << ": Booking ID: " << temp->item.getBookingID() << "   Name: " << temp->item.getGuestName()
 					<< "   Check In Date: " << temp->item.getCheckIn() << "   Check In Status: " << temp->item.getStatus() << endl;
 				temp = temp->next;
@@ -240,6 +294,62 @@ void BookingDictionary::printUserBookings(KeyType key, string name) {
 				temp = temp->next;
 			}
 		}
+		if (hasBooking) {
+			while (true)
+			{
+				cout << "\nChoose the booking to check into: ";
+				int choice;
+				
+				cin >> choice;
+				
+
+				if (cin.fail() || choice<1 || choice >=counter) {
+					cout << "Enter a valid number!\n";
+				}
+				else
+				{
+					Node* currentItem = items[index];
+					int iterator = 1;
+					while (currentItem!=NULL)
+					{
+						if (currentItem->item.getStatus() != "Booked" || currentItem->item.getGuestName() != name) {
+							currentItem = currentItem->next;
+							continue;
+						}
+						else if (iterator == choice) {
+							currentItem->item.setStatus("Checked In");
+
+							return currentItem;
+
+							//// Assign room
+							//tm checkin;
+							//const char* array1 = currentItem->item.getCheckIn().c_str();
+							//sscanf_s(array1, "%2d/%2d/%4d",
+							//	&checkin.tm_mday, &checkin.tm_mon, &checkin.tm_year);
+
+							//tm checkout;
+							//const char* array2 = currentItem->item.getCheckIn().c_str();
+							//sscanf_s(array2, "%2d/%2d/%4d",
+							//	&checkout.tm_mday, &checkout.tm_mon, &checkout.tm_year);
+
+
+							cout << "\nSuccessfully checked in!\n";
+							break;
+						}
+						else {
+							iterator++;
+							currentItem = currentItem->next;
+						}
+					}
+					break;
+				}
+			}
+		}
+		else {
+			cout << "\nNo upcoming bookings!\n" << endl;
+			return NULL;
+		}
+		
 	}
 }
 
@@ -369,6 +479,19 @@ int BookingDictionary::getLastDate(int month, int year)
 			return 29;
 		}
 		return 28;
+	}
+}
+
+void BookingDictionary::returnAllBookings(BookingList &allBookings) {
+
+	for (int i = 0; i < MAX_SIZE; i++) {
+		if (items[i] != NULL) {
+			Node* temp = items[i];
+			while (temp != NULL) {
+				allBookings.add(temp->item);
+				temp = temp->next;
+			}
+		}
 	}
 }
 

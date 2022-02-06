@@ -1,9 +1,11 @@
 #include "BookingList.h"
 #include "Booking.h"
+#include "Room.h"
 #include <time.h>
 #include <sstream>
 #include <iostream>
 #include <string>
+
 
 BookingList::BookingList() { size = 0; }
 
@@ -68,7 +70,7 @@ void BookingList::remove(int index)
 // return the item in the specified index of the list
 Booking BookingList::get(int index)
 {
-	bool success = (index >= 0) && (index < size);
+	bool success = (index >= 0) && (index <= size);
 	if (success)
 	{
 		if (index == 0)
@@ -123,6 +125,95 @@ int BookingList::getLength()
 	else
 		cout << "The list is empty." << endl;
 }*/
+
+string BookingList::findEmptyRoom(const char* ci, const char* co, string rn) {
+
+	string room ="";
+	if (!isEmpty()) {
+		tm x;
+		sscanf_s(ci, "%2d/%2d/%4d",
+			&x.tm_mday, &x.tm_mon, &x.tm_year);
+		x.tm_hour = 0;
+		x.tm_min = 0;
+		x.tm_sec = 0;
+		x.tm_year -= 1900;
+		x.tm_mon -= 1;
+		time_t checkin = mktime(&x);
+
+		tm y;
+		sscanf_s(co, "%2d/%2d/%4d",
+			&y.tm_mday, &y.tm_mon, &y.tm_year);
+		y.tm_hour = 0;
+		y.tm_min = 0;
+		y.tm_sec = 0;
+		y.tm_year -= 1900;
+		y.tm_mon -= 1;
+		time_t checkout= mktime(&y);
+
+		Node* tempNode = firstNode;
+		while (tempNode != NULL) {
+			if (tempNode->item.getStatus() == "Booked") {
+				tempNode = tempNode->next;
+				continue;
+			}
+			else if (tempNode->item.getRoomNo()==rn){
+
+				tm q;
+				const char* arrayC = tempNode->item.getCheckIn().c_str();
+				sscanf_s(arrayC, "%2d/%2d/%4d",
+					&q.tm_mday, &q.tm_mon, &q.tm_year);
+				q.tm_hour = 0;
+				q.tm_min = 0;
+				q.tm_sec = 0;
+				q.tm_year -= 1900;
+				q.tm_mon -= 1;
+				time_t cicompare = mktime(&q);
+
+				tm r;
+				const char* arrayD = tempNode->item.getCheckOut().c_str();
+				sscanf_s(arrayD, "%2d/%2d/%4d",
+					&r.tm_mday, &r.tm_mon, &r.tm_year);
+				r.tm_hour = 0;
+				r.tm_min = 0;
+				r.tm_sec = 0;
+				r.tm_year -= 1900;
+				r.tm_mon -= 1;
+				time_t cocompare = mktime(&r);
+
+				if (difftime(cicompare, checkout) < 0 && difftime(checkin, cicompare) > 0) {
+					if (room == tempNode->item.getRoomNo()) {
+						room = "";
+					}
+					tempNode = tempNode->next;
+					continue;
+				}
+				else if (difftime(cicompare, checkout) < 0 && difftime(checkin, cicompare) < 0) {
+					if (room == tempNode->item.getRoomNo()) {
+						room = "";
+					}
+					tempNode = tempNode->next;
+					continue;
+				}
+				else {
+					room = tempNode->item.getRoomNo();
+					tempNode = tempNode->next;
+					continue;
+				}
+			}
+			else {
+				tempNode = tempNode->next;
+				continue;
+			}
+		}
+		if (room != "") {
+
+			return room;
+		}
+		else {
+			return "NIL";
+		}
+	}
+}
 
 int BookingList::getGuestDate(const char* userDate)
 {
@@ -191,3 +282,68 @@ int BookingList::getGuestDate(const char* userDate)
 		}
 	}
 }
+
+BookingList::Node* BookingList::MergeLists(Node* lst1, Node* lst2) {
+	
+	Node* result = NULL;
+
+	if (lst1 == NULL)
+		return (lst2);
+	else if (lst2 == NULL)
+		return (lst1);
+
+	// recursively merging two lists
+	if (lst1->item.getBookingID() <= lst2->item.getBookingID()) {
+		result = lst1;
+		result->next = MergeLists(lst1->next, lst2);
+	}
+	else {
+		result = lst2;
+		result->next = MergeLists(lst1, lst2->next);
+	}
+	return result;
+}
+
+void BookingList::splitList(Node* source, Node** front, Node** back) {
+	Node* ptr1;
+	Node* ptr2;
+	ptr2 = source;
+	ptr1 = source->next;
+
+	// ptr1 is incrmented twice and ptr2 is icremented once.
+	while (ptr1 != NULL) {
+		ptr1 = ptr1->next;
+		if (ptr1 != NULL) {
+			ptr2 = ptr2->next;
+			ptr1 = ptr1->next;
+		}
+	}
+
+	// ptr2 is at the midpoint.
+	*front = source;
+	*back = ptr2->next;
+	ptr2->next = NULL;
+}
+
+void BookingList::MergeSort(Node** thead)
+{
+	Node* head = *thead;
+	Node* ptr1;
+	Node* ptr2;
+
+	// Base Case
+	if ((head == NULL) || (head->next == NULL)) {
+		return;
+	}
+
+	// Splitting list
+	splitList(head, &ptr1, &ptr2);
+
+	// Recursively sorting two lists.
+	MergeSort(&ptr1);
+	MergeSort(&ptr2);
+
+	// Sorted List.
+	*thead = MergeLists(ptr1, ptr2);
+}
+

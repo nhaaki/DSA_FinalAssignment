@@ -15,11 +15,23 @@ using namespace std;
 int main()
 {
 	void displayMenu();
+	Booking setRoomForBooking(Booking b, RoomList &rl, BookingList bl);
 	void stod(const char* date);
 	BookingList bookingCheckIn;
 	RoomList roomList;
 	BookingDictionary bookingRoom;
 	BookingDictionary checkinbookings;
+	time_t todaysDate;
+
+	tm currentDate;
+	currentDate.tm_year = 2021;
+	currentDate.tm_mon = 04;
+	currentDate.tm_mday = 01;
+	currentDate.tm_hour = 0;
+	currentDate.tm_min = 0;
+	currentDate.tm_sec = 0;
+
+
 
 	vector<vector<string>> bookingData;
 	vector<string> row;
@@ -94,6 +106,27 @@ int main()
 	int option;
     while (true)
 	{
+
+		// Export latest data into csv
+
+		BookingList allBookings;
+		checkinbookings.returnAllBookings(allBookings);
+		allBookings.MergeSort(&(allBookings.firstNode));
+		ofstream file;
+		file.open("updatedBookings.csv", fstream::trunc);
+		file << "Booking ID,Booking Date,Guest Name,Room #,Room Type,Status,Check In,Check Out,Guests #,Special Requests\n";
+		int length = allBookings.getLength();
+		for (int x = 1; x <= length; x++) {
+			Booking current = allBookings.get(x);
+			file << current.getBookingID() << "," << current.getBookingDate() << "," << current.getGuestName() << "," << current.getRoomNo() << "," <<
+				current.getRoomType() << "," << current.getStatus() << "," << current.getCheckIn() << "," << current.getCheckOut() << "," << current.getNoOfGuests()
+				<< "," << current.getSpecialRequest() << "\n";
+		}
+		file.close();
+
+		// End of exporting booking data
+
+		cout << "Today's date: " << currentDate.tm_mday << "/" << currentDate.tm_mon << "/" << currentDate.tm_year << endl;
 		displayMenu();
 		cin >> option;
 
@@ -101,13 +134,25 @@ int main()
 		{
 			string name;
 			string temp;
-
+			cin.clear();
 			cin.ignore(numeric_limits<streamsize>::max(), '\n');
-			cout << "Enter your name: ";
+			cout << "\nEnter your name: ";
 			getline(cin, name);
 			temp = name.substr(0, 5);
+		
+			tm tempDate = currentDate;
+			tempDate.tm_year -= 1900;
+			tempDate.tm_mon -= 1;
 			int hashed = checkinbookings.hash(temp) + 100;
-			checkinbookings.printUserBookings(to_string(hashed), name);
+			Node* booking = checkinbookings.printUserBookings(to_string(hashed), name, &tempDate);
+			if (booking != NULL) {
+				Booking newB = setRoomForBooking(booking->item, roomList, allBookings);
+				if (newB.getBookingID() != NULL) {
+					checkinbookings.replace(to_string(hashed), newB);
+					cout << "Replaced!\n";
+				}
+			}
+			
 		}
 		else
 		if (option == 2)	
@@ -136,6 +181,15 @@ int main()
 			if (bookingRoom.displayRoomDates(array) == -1)
 				cout << "Please enter a valid date in the stated format" << endl;;
 		}
+		else if (option == 5) {
+			string date;
+			cout << "\nEnter new date dd/mm/yyyy: ";
+			cin >> date;
+			const char* array = date.c_str();
+			sscanf_s(array, "%2d/%2d/%4d",
+				&currentDate.tm_mday, &currentDate.tm_mon, &currentDate.tm_year);
+			cout << "Date successfully changed! \n\n";
+		}
 		else
 		if (option == 0)
 		{
@@ -159,7 +213,58 @@ void displayMenu()
 	cout << "2 Add New Booking            \n";
 	cout << "3 Display Guests               \n";
 	cout << "4 Display Occupied Rooms               \n";
+	cout << "5 Change current date               \n";
 	cout << "0 Exit							 \n";
 	cout << "--------------------------------\n";
 	cout << "Enter option : ";
+}
+
+Booking setRoomForBooking(Booking b, RoomList &rl, BookingList bl) {
+	RoomList::Node* start = rl.firstNode->next;
+	RoomList::Node* prev = rl.firstNode;
+
+	// Keep rooms with same booking room type
+	while (start != NULL) {
+		if (rl.firstNode == prev && prev->item.getRoomType() != b.getRoomType()) {
+			RoomList::Node* temp = prev;
+			rl.firstNode = start;
+			prev = start;
+			start = start->next;
+			temp->next = NULL;
+			delete temp;
+		}
+		else if (start->item.getRoomType() != b.getRoomType()) {
+			prev->next = start->next;
+			RoomList::Node* temp = start;
+			temp->next = NULL;
+			delete temp;
+			start = prev->next;
+		}
+		else {
+			prev = prev->next;
+			start = start->next;
+		}
+	}
+
+	RoomList::Node* iterator = rl.firstNode;
+	string test;
+	while (iterator != NULL) {
+
+		Room room = iterator->item;
+		const char* arrayA = b.getCheckIn().c_str();
+		const char* arrayB = b.getCheckOut().c_str();
+
+		test = bl.findEmptyRoom(arrayA, arrayB, room.getRoomNo());
+		iterator = iterator->next;
+	}
+	if (test != "") {
+		b.setRoomNo(test);
+		return b;
+		cout << "\nRoom successfully assigned!\n";
+	}
+	else {
+		Booking c;
+		return c;
+		cout << "Error... No rooms available...\n";
+	}
 }

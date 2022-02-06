@@ -1,7 +1,9 @@
 // Dictionary.h - - Specification of Dictionary ADT
 #include<string>
 #include<iostream>
+#include<vector>
 #include "Booking.h"
+#include "BookingList.h"
 using namespace std;
 
 const int MAX_SIZE = 25;
@@ -35,6 +37,8 @@ public:
 	// remove an item with the specified key in the Dictionary
 	void remove(KeyType key);
 
+	void replace(KeyType key, Booking booking);
+
 	// check if the Dictionary is empty
 	bool isEmpty();
 
@@ -49,7 +53,9 @@ public:
 
 	int displayRoomDates(const char* d);
 
-	void printUserBookings(KeyType key, string name);
+	Node* printUserBookings(KeyType key, string name, tm* d);
 
 	int getLastDate(int month, int year);
+
+	void returnAllBookings(BookingList &allBookings);
 };

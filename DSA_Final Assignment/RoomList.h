@@ -7,16 +7,15 @@ using namespace std;
 class RoomList
 {
 private:
+	int  size;			// number of items in the list
+
+public:
 	struct Node
 	{
 		Room item;	// data item
 		Node* next;	// pointer pointing to next item
 	};
-
 	Node* firstNode;	// point to the first item
-	int  size;			// number of items in the list
-
-public:
 
 	// constructor
 	RoomList();
